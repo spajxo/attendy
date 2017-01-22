@@ -1,0 +1,33 @@
+{% extends '::layout.html.twig' %}
+
+{% block h1 %}
+    {{ 'Time Entry'|trans }}
+    <small>{{ 'Edit'|trans }}</small>
+{% endblock %}
+
+{% block content %}
+    <div class="box box-primary">
+        {{ form_start(edit_form) }}
+        <div class="box-body">
+            {{ form_widget(edit_form) }}
+
+        </div>
+        <div class="box-footer">
+            <div class="btn-group pull-right">
+                <a href="{{ path('time-entry_index') }}" class="btn btn-default">
+                    <i class="fa fa-backward"></i>
+                </a>
+                <button class="btn btn-primary" type="submit">
+                    <i class="fa fa-save"></i>
+                </button>
+            </div>
+            {{ form_end(edit_form) }}
+            {{ form_start(delete_form) }}
+            <button class="btn btn-danger" type="submit">
+                <i class="fa fa-eraser"></i>
+            </button>
+            {{ form_end(delete_form) }}
+        </div>
+    </div>
+
+{% endblock %}

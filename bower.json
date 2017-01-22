@@ -1,0 +1,23 @@
+{
+  "name": "attendy",
+  "homepage": "https://github.com/spajxo/attendio",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Pavel Stejskal"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "web/assets/vendor/",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "AdminLTE": "admin-lte#^2.3.3",
+    "eonasdan-bootstrap-datetimepicker": "^4.17.37"
+  }
+}

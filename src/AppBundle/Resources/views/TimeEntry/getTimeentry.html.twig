@@ -1,0 +1,43 @@
+{% extends '::layout.html.twig' %}
+
+{% block h1 %}
+    {{ 'Time Entry'|trans }}
+    <small>{{ 'Show'|trans }}</small>
+{% endblock %}
+
+{% block content %}
+    <div class="box box-primary">
+        <div class="box-body">
+            <dl class="dl-horizontal">
+                <dt>Id</dt>
+                <dd>{{ timeEntry.id }}</dd>
+                <dt>Date</dt>
+                <dd>{{ timeEntry.date|date('d.m.Y') }}</dd>
+                <dt>User</dt>
+                <dd>{{ timeEntry.user }}</dd>
+                <dt>Time In</dt>
+                <dd>{{ timeEntry.timeIn }}</dd>
+                <dt>Time Out</dt>
+                <dd>{{ timeEntry.timeOut }}</dd>
+                <dt>Break</dt>
+                <dd>{{ timeEntry.break }} minutes</dd>
+            </dl>
+        </div>
+        <div class="box-footer">
+            <div class="btn-group pull-right">
+                <a href="{{ path('get_timeentries') }}" class="btn btn-default btn-flat">
+                    <i class="fa fa-backward"></i>
+                </a>
+                {#<a href="{{ path('time-entry_edit', { 'id': timeEntry.id }) }}"#}
+                {#class="btn btn-primary">#}
+                {#<i class="fa fa-pencil"></i>#}
+                {#</a>#}
+            </div>
+            {#{{ form_start(delete_form) }}#}
+            <button class="btn btn-danger" type="submit">
+                <i class="fa fa-eraser"></i>
+            </button>
+            {#{{ form_end(delete_form) }}#}
+        </div>
+    </div>
+{% endblock %}

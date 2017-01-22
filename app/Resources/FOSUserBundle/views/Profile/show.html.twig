@@ -1,0 +1,10 @@
+{% extends "::layout.html.twig" %}
+
+{% block h1 %}
+    {{ 'Profile'|trans }}
+    <small>{{ 'Detail'|trans }}</small>
+{% endblock %}
+
+{% block content %}
+    {% include "FOSUserBundle:Profile:show_content.html.twig" %}
+{% endblock content %}

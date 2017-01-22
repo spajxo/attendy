@@ -1,0 +1,55 @@
+{% extends '::layout.html.twig' %}
+
+{% block h1 %}
+    {{ 'Time Entry'|trans }}
+    <small>{{ 'List'|trans }}</small>
+{% endblock %}
+
+{% block content %}
+    <div class="box box-primary">
+        <div class="box-body">
+            <table id="timeentry_table" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>Timein</th>
+                    <th>Timeout</th>
+                    <th>Break</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for timeEntry in timeEntries %}
+                    <tr>
+                        <td><a href="{{ path('get_timeentry', { 'timeEntry': timeEntry.id }) }}">{{ timeEntry.id }}</a>
+                        </td>
+                        <td>{% if timeEntry.date %}{{ timeEntry.date|date('Y-m-d H:i:s') }}{% endif %}</td>
+                        <td>{{ timeEntry.timeIn }}</td>
+                        <td>{{ timeEntry.timeOut }}</td>
+                        <td>{{ timeEntry.break }}</td>
+                        <td>{{ timeEntry.user }}</td>
+                        <td>
+                            <div class="btn-group pull-right">
+                                <a href="{{ path('get_timeentry', { 'timeEntry': timeEntry.id}) }}"
+                                   class="btn btn-default">
+                                    <i class="fa fa-search"></i>
+                                </a>
+                                {#<a href="{{ path('', { 'id': timeEntry.id}) }}" class="btn btn-primary">#}
+                                {#<i class="fa fa-pencil"></i>#}
+                                {#</a>#}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="box-footer">
+            {#<a href="{{ path('') }}" class="btn btn-primary pull-right">#}
+            {#<i class="fa fa-plus"></i>#}
+            {#</a>#}
+        </div>
+    </div>
+
+{% endblock %}
