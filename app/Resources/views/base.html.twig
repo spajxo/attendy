@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% block head %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>{% block title %}{{ appinfo.name }}{{ appinfo.suffix | default }}{% endblock %}</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+        {% stylesheets
+        'assets/vendor/AdminLTE/bootstrap/css/bootstrap.min.css'
+        'assets/vendor/AdminLTE/dist/css/AdminLTE.min.css'
+        'assets/vendor/AdminLTE/dist/css/skins/skin-blue.min.css'
+        'assets/vendor/AdminLTE/plugins/iCheck/square/blue.css'
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css'
+        'https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css'
+        'assets/vendor/AdminLTE/plugins/datepicker/datepicker3.css'
+        'assets/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css'
+        'assets/vendor/AdminLTE/plugins/timepicker/bootstrap-timepicker.min.css'
+        filter='cssrewrite' output='css/compiled/app.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}"/>
+        {% endstylesheets %}
+
+        {% block stylesheets %}
+        {% endblock %}
+
+        {% javascripts
+        'https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js'
+        'https://oss.maxcdn.com/respond/1.4.2/respond.min.js'
+        output='js/compiled/app_header.js' %}
+        <script src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+
+        {% block javascripts %}
+        {% endblock %}
+
+    {% endblock head %}
+</head>
+<body class="{% block body_class %}hold-transition skin-blue sidebar-mini{% endblock %}">
+{% block body %}
+    {% block main %}{% endblock %}
+
+    {% javascripts
+    'assets/vendor/AdminLTE/plugins/jQuery/jQuery-2.2.0.min.js'
+    'https://code.jquery.com/ui/1.11.4/jquery-ui.min.js'
+    'assets/vendor/AdminLTE/bootstrap/js/bootstrap.min.js'
+    'assets/vendor/AdminLTE/plugins/iCheck/icheck.min.js'
+    'assets/vendor/AdminLTE/plugins/datepicker/bootstrap-datepicker.js'
+    'assets/vendor/AdminLTE/plugins/daterangepicker/moment.min.js'
+    'assets/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js'
+    'assets/vendor/AdminLTE/plugins/timepicker/bootstrap-timepicker.min.js'
+    'assets/vendor/AdminLTE/dist/js/app.min.js'
+    'js/attendy.js'
+    output='js/compiled/app_footer.js' %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    <script>
+        $.widget.bridge('uibutton', $.ui.button);
+    </script>
+    {% block footer_javascripts %}
+    {% endblock %}
+{% endblock body %}
+</body>
+</html>

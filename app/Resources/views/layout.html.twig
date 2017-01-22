@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <div class="wrapper">
+
+        <header class="main-header">
+            {% block main_header %}
+                <!-- Logo -->
+                <a href="{{ path('dashboard') }}" class="logo">
+                    <!-- mini logo for sidebar mini 50x50 pixels -->
+                    <span class="logo-mini"><b>{{ appinfo.abbr }}</b></span>
+                    <!-- logo for regular state and mobile devices -->
+                    <span class="logo-lg"><b>{{ appinfo.name }}</b>{{ appinfo.suffix | default }}</span>
+                </a>
+                <!-- Header Navbar: style can be found in header.less -->
+                <nav class="navbar navbar-static-top">
+                    {% block navbar %}
+                        <!-- Sidebar toggle button-->
+                        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                            <span class="sr-only">Toggle navigation</span>
+                        </a>
+
+                        <div class="navbar-custom-menu">
+                            <ul class="nav navbar-nav">
+                                <li class="dropdown user user-menu">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        {% if app.user.avatarWebPath is not empty %}
+                                            <img src="{{ app.user.avatarWebPath|imagine_filter('thumb') }}"
+                                                 class="user-image" alt="User Image">
+                                        {% endif %}
+                                        <span class="hidden-xs">{{ app.user.username }}</span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <!-- User image -->
+                                        <li class="user-header">
+                                            {% if app.user.avatarWebPath is not empty %}
+                                                <img src="{{ app.user.avatarWebPath|imagine_filter('thumb') }}"
+                                                     class="img-circle" alt="User Image">
+                                            {% endif %}
+                                            <p>
+                                                {{ app.user.username }}
+                                                <small>Member since Nov. 2012</small>
+                                            </p>
+                                        </li>
+                                        <!-- Menu Footer-->
+                                        <li class="user-footer">
+                                            <div class="pull-left">
+                                                <a href="{{ path('fos_user_profile_show') }}"
+                                                   class="btn btn-default btn-flat">Profile</a>
+                                            </div>
+                                            <div class="pull-right">
+                                                <a href="{{ path('fos_user_security_logout') }}"
+                                                   class="btn btn-default btn-flat">Sign out</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    {% endblock navbar %}
+                </nav>
+            {% endblock %}
+        </header>
+
+        <aside class="main-sidebar">
+            {% block main_sidebar %}
+                <!-- sidebar: style can be found in sidebar.less -->
+                <section class="sidebar">
+                    {% block sidebar %}
+                        <!-- Sidebar user panel -->
+                        <div class="user-panel">
+                            {% block user_panel %}
+                                <div class="pull-left image">
+                                    {% if app.user.avatarWebPath is not empty %}
+                                        <img src='{{ app.user.avatarWebPath|imagine_filter('thumb') }}'
+                                             class="img-circle" alt="User Image">
+                                    {% endif %}
+                                </div>
+                                <div class="pull-left info">
+                                    <p>{{ app.user.username }}</p>
+                                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                                </div>
+                            {% endblock %}
+                        </div>
+                        <!-- sidebar menu: : style can be found in sidebar.less -->
+                        {% block sidebar_menu %}
+                            {{ knp_menu_render('AppBundle:Builder:mainMenu') }}
+                        {% endblock %}
+                    {% endblock %}
+                </section>
+                <!-- /.sidebar -->
+            {% endblock %}
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            {% block content_wrapper %}
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    {% block content_header %}
+                        <h1>
+                            {% block h1 %}
+                                Dashboard
+                                <small>Control panel</small>
+                            {% endblock %}
+                        </h1>
+                    {% endblock %}
+                </section>
+
+                <!-- Main content -->
+                <section class="content">
+                    {% block content %}
+                    {% endblock %}
+                </section>
+                <!-- /.content -->
+            {% endblock %}
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer">
+            {% block main_footer %}
+                <div class="pull-right hidden-xs">
+                    <b>Version</b> 0.0.0
+                </div>
+                <strong>{{ appinfo.name }}</strong>{{ appinfo.suffix | default }} by {{ appinfo.author }} &copy; 2016
+            {% endblock %}
+        </footer>
+    </div>
+{% endblock %}

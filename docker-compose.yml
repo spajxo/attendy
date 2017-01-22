@@ -1,0 +1,38 @@
+version: '2'
+services:
+    php:
+      build: .
+      links:
+        - db
+      volumes_from:
+        - data
+
+    nginx:
+      image: nginx
+      ports:
+        - 80:80
+        - 8000:8000
+      links:
+        - php
+      volumes:
+        - ./dckr/nginx.conf:/etc/nginx/nginx.conf:ro
+      volumes_from:
+        - data
+
+    db:
+      image: postgres
+      volumes:
+        - ./dckr/data/db:/var/lib/postgresql/data
+      volumes_from:
+        - data
+      ports:
+        - '5432:5432'
+      environment:
+        - POSTGRES_PASSWORD=attendyDbPass
+        - POSTGRES_USER=attendyDbUser
+        - POSTGRES_DB=attendy
+
+    data:
+      image: busybox:latest
+      volumes:
+        - .:/srv
