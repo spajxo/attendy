@@ -8,8 +8,10 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Model\TimeEntryInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -17,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @package AppBundle\Entity
  * @ORM\Entity()
  * @ORM\Table("app_time_card")
+ * @UniqueEntity(fields={"user", "year", "month"})
  */
 class TimeCard
 {
@@ -37,17 +40,38 @@ class TimeCard
     protected $user;
 
     /**
-     * @var \DateTime
-     * @Assert\DateTime()
-     * @ORM\Column(type="datetime")
+     * @var int
+     * @Assert\NotBlank()
+     * @Assert\Range(min="1970", max="2100")
+     * @ORM\Column(type="smallint")
+     */
+    protected $year;
+
+    /**
+     * @var int
+     * @Assert\NotBlank()
+     * @Assert\Range(min="1", max="12")
+     * @ORM\Column(type="smallint")
      */
     protected $month;
 
     /**
-     * MonthlyTimeCard constructor.
+     * @var ArrayCollection|TimeEntryInterface[]
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\TimeEntry", mappedBy="timeCard")
      */
-    public function __construct()
+    protected $timeEntries;
+
+    /**
+     * MonthlyTimeCard constructor.
+     * @param User $user
+     * @param int  $year
+     * @param int  $month
+     */
+    public function __construct(User $user, int $year, int $month)
     {
+        $this->user = $user;
+        $this->year = $year;
+        $this->month = $month;
         $this->timeEntries = new ArrayCollection();
     }
 
@@ -84,35 +108,35 @@ class TimeCard
     }
 
     /**
-     * @return \DateTime
+     * @return int
      */
-    public function getMonth()
+    public function getYear()
     {
-        return $this->month;
+        return $this->year;
     }
 
     /**
-     * @param \DateTime $month
+     * @param int $year
      */
-    public function setMonth($month)
+    public function setYear($year)
     {
-        $this->month = $month;
+        $this->year = $year;
     }
 
     /**
-     * @return TimeEntry[]
+     * @return TimeEntryInterface[]
      */
     public function getTimeEntries()
     {
-        return $this->timeEntries;
+        return clone $this->timeEntries;
     }
 
     /**
-     * @param TimeEntry[] $timeEntries
+     * @param TimeEntryInterface $timeEntry
      */
-    public function setTimeEntries($timeEntries)
+    public function addTimeEntry(TimeEntryInterface $timeEntry)
     {
-        $this->timeEntries = $timeEntries;
+        $this->timeEntries->add($timeEntry);
     }
 
 }

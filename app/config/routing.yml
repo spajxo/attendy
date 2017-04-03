@@ -2,14 +2,6 @@ app:
     resource: "@AppBundle/Controller/"
     type:     annotation
 
-rest:
-    type:     rest
-    resource: "@AppBundle/Controller/"
-
-NelmiApiDocBundle:
-      resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
-      prefix:   /api/doc
-
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
 

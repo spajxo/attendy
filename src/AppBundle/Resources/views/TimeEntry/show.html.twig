@@ -25,19 +25,19 @@
         </div>
         <div class="box-footer">
             <div class="btn-group pull-right">
-                <a href="{{ path('get_timeentries') }}" class="btn btn-default btn-flat">
+                <a href="{{ path('timeentry_index') }}" class="btn btn-default btn-flat">
                     <i class="fa fa-backward"></i>
                 </a>
-                {#<a href="{{ path('time-entry_edit', { 'id': timeEntry.id }) }}"#}
-                {#class="btn btn-primary">#}
-                {#<i class="fa fa-pencil"></i>#}
-                {#</a>#}
+                <a href="{{ path('timeentry_edit', { 'id': timeEntry.id }) }}"
+                   class="btn btn-primary">
+                    <i class="fa fa-pencil"></i>
+                </a>
             </div>
-            {#{{ form_start(delete_form) }}#}
+            {{ form_start(delete_form) }}
             <button class="btn btn-danger" type="submit">
                 <i class="fa fa-eraser"></i>
             </button>
-            {#{{ form_end(delete_form) }}#}
+            {{ form_end(delete_form) }}
         </div>
     </div>
 {% endblock %}

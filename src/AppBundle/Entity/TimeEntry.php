@@ -8,6 +8,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Model\TimeEntryInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -18,9 +19,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity()
  * @ORM\Table("app_time_entry")
  * @UniqueEntity(fields={"date", "user"})
- * @ORM\HasLifecycleCallbacks()
  */
-class TimeEntry
+class TimeEntry implements TimeEntryInterface
 {
     /**
      * @var int
@@ -34,7 +34,7 @@ class TimeEntry
      * @var \DateTime
      * @Assert\DateTime()
      * @Assert\NotBlank()
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="date")
      */
     protected $date;
 
@@ -45,6 +45,15 @@ class TimeEntry
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     protected $user;
+
+
+    /**
+     * @var TimeCard
+     * @Assert\NotBlank()
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TimeCard", inversedBy="timeEntries")
+     * @ORM\JoinColumn(name="time_entry_id", referencedColumnName="id")
+     */
+    protected $timeCard;
 
     /**
      * @var string

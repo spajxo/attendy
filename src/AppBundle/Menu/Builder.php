@@ -34,7 +34,7 @@ class Builder implements ContainerAwareInterface
 
         $menu->addChild('Profile', ['route' => 'fos_user_profile_show'])->setAttribute('icon', 'fa fa-user');
 
-        $menu->addChild('Time Entries', ['route' => 'get_timeentries'])->setAttribute('icon', 'fa fa-clock-o');
+        $menu->addChild('Time Entries', ['route' => 'timeentry_index'])->setAttribute('icon', 'fa fa-clock-o');
 
         return $menu;
     }

@@ -6,15 +6,19 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TimeEntryControllerTest extends WebTestCase
 {
-    /*
+
     public function testCompleteScenario()
     {
         // Create a new client to browse the application
         $client = static::createClient();
 
         // Create a new entry in the database
-        $crawler = $client->request('GET', '/time-entry/');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /time-entry/");
+        $crawler = $client->request('GET', '/timeentry/');
+        $this->assertEquals(
+            200,
+            $client->getResponse()->getStatusCode(),
+            "Unexpected HTTP status code for GET /timeentry/"
+        );
         $crawler = $client->click($crawler->selectLink('Create a new entry')->link());
 
         // Fill in the form and submit it
@@ -45,11 +49,9 @@ class TimeEntryControllerTest extends WebTestCase
 
         // Delete the entity
         $client->submit($crawler->selectButton('Delete')->form());
-        $crawler = $client->followRedirect();
+        $client->followRedirect();
 
         // Check the entity has been delete on the list
         $this->assertNotRegExp('/Foo/', $client->getResponse()->getContent());
     }
-
-    */
 }

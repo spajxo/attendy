@@ -340,6 +340,7 @@ class RequirementCollection implements IteratorAggregate
 
     /**
      * Returns the recommendations that were not met.
+     *
      * @return Requirement[]
      */
     public function getFailedRecommendations()
@@ -411,11 +412,9 @@ class SymfonyRequirements extends RequirementCollection
             $this->addRequirement(
                 version_compare($installedPhpVersion, $requiredPhpVersion, '>='),
                 sprintf('PHP version must be at least %s (%s installed)', $requiredPhpVersion, $installedPhpVersion),
-                sprintf(
-                    'You are running PHP version "<strong>%s</strong>", but Symfony needs at least PHP "<strong>%s</strong>" to run.
+                sprintf('You are running PHP version "<strong>%s</strong>", but Symfony needs at least PHP "<strong>%s</strong>" to run.
                 Before using Symfony, upgrade your PHP installation, preferably to the latest version.',
-                    $installedPhpVersion,
-                    $requiredPhpVersion
+                    $installedPhpVersion, $requiredPhpVersion
                 ),
                 sprintf('Install PHP %s or newer (installed version is %s)', $requiredPhpVersion, $installedPhpVersion)
             );
@@ -452,9 +451,7 @@ class SymfonyRequirements extends RequirementCollection
 
         if (version_compare($installedPhpVersion, '7.0.0', '<')) {
             $this->addPhpIniRequirement(
-                'date.timezone',
-                true,
-                false,
+                'date.timezone', true, false,
                 'date.timezone setting must be set',
                 'Set the "<strong>date.timezone</strong>" setting in php.ini<a href="#phpini">*</a> (like Europe/Paris).'
             );
@@ -470,8 +467,7 @@ class SymfonyRequirements extends RequirementCollection
 
             $this->addRequirement(
                 isset($timezones[@date_default_timezone_get()]),
-                sprintf(
-                    'Configured default timezone "%s" must be supported by your installation of PHP',
+                sprintf('Configured default timezone "%s" must be supported by your installation of PHP',
                     @date_default_timezone_get()
                 ),
                 'Your default timezone is not supported by PHP. Check for typos in your <strong>php.ini</strong> file and have a look at the list of deprecated timezones at <a href="http://php.net/manual/en/timezones.others.php">http://php.net/manual/en/timezones.others.php</a>.'
@@ -544,8 +540,7 @@ class SymfonyRequirements extends RequirementCollection
 
         if (extension_loaded('xdebug')) {
             $this->addPhpIniRequirement(
-                'xdebug.show_exception_trace',
-                false,
+                'xdebug.show_exception_trace', false,
                 true
             );
 
@@ -590,8 +585,9 @@ class SymfonyRequirements extends RequirementCollection
             try {
                 $r = new ReflectionClass('Sensio\Bundle\DistributionBundle\SensioDistributionBundle');
 
-                $contents =
-                    file_get_contents(dirname($r->getFileName()).'/Resources/skeleton/app/SymfonyRequirements.php');
+                $contents = file_get_contents(dirname($r->getFileName())
+                    .'/Resources/skeleton/app/SymfonyRequirements.php'
+                );
             } catch (ReflectionException $e) {
                 $contents = '';
             }
@@ -721,8 +717,7 @@ class SymfonyRequirements extends RequirementCollection
             if (class_exists('Symfony\Component\Intl\Intl')) {
                 $this->addRecommendation(
                     \Symfony\Component\Intl\Intl::getIcuDataVersion() <= \Symfony\Component\Intl\Intl::getIcuVersion(),
-                    sprintf(
-                        'intl ICU version installed on your system is outdated (%s) and does not match the ICU data bundled with Symfony (%s)',
+                    sprintf('intl ICU version installed on your system is outdated (%s) and does not match the ICU data bundled with Symfony (%s)',
                         \Symfony\Component\Intl\Intl::getIcuVersion(),
                         \Symfony\Component\Intl\Intl::getIcuDataVersion()
                     ),
@@ -753,7 +748,8 @@ class SymfonyRequirements extends RequirementCollection
             );
         }
 
-        $accelerator = (extension_loaded('eaccelerator') && ini_get('eaccelerator.enable'))
+        $accelerator =
+            (extension_loaded('eaccelerator') && ini_get('eaccelerator.enable'))
             || (extension_loaded('apc') && ini_get('apc.enabled'))
             || (extension_loaded('Zend Optimizer+') && ini_get('zend_optimizerplus.enable'))
             || (extension_loaded('Zend OPcache') && ini_get('opcache.enable'))
@@ -792,9 +788,11 @@ class SymfonyRequirements extends RequirementCollection
             $drivers = PDO::getAvailableDrivers();
             $this->addRecommendation(
                 count($drivers) > 0,
-                sprintf(
-                    'PDO should have some drivers installed (currently available: %s)',
-                    count($drivers) ? implode(', ', $drivers) : 'none'
+                sprintf('PDO should have some drivers installed (currently available: %s)',
+                    count($drivers) ? implode(
+                        ', ',
+                        $drivers
+                    ) : 'none'
                 ),
                 'Install <strong>PDO drivers</strong> (mandatory for Doctrine).'
             );
@@ -813,7 +811,7 @@ class SymfonyRequirements extends RequirementCollection
         $unit = '';
         if (!ctype_digit($size)) {
             $unit = strtolower(substr($size, -1, 1));
-            $size = (int)substr($size, 0, -1);
+            $size = (int) substr($size, 0, -1);
         }
         switch ($unit) {
             case 'g':
@@ -823,7 +821,7 @@ class SymfonyRequirements extends RequirementCollection
             case 'k':
                 return $size * 1024;
             default:
-                return (int)$size;
+                return (int) $size;
         }
     }
 

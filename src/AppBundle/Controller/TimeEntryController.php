@@ -3,61 +3,144 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\TimeEntry;
-use Doctrine\Common\Persistence\ObjectRepository;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use FOS\RestBundle\Controller\Annotations\View;
-use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Request\ParamFetcher;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use AppBundle\Model\TimeEntryInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class TimeEntryController
- * @package ApiBundle\Controller
+ * Timeentry controller.
+ * @Route("timeentry")
  */
-class TimeEntryController extends FOSRestController
+class TimeEntryController extends Controller
 {
     /**
-     * List all Timeentries.
-     * @ApiDoc(
-     *   resource = true,
-     *   statusCodes = {
-     *     200 = "Returned when successful"
-     *   }
-     * )
-     * @QueryParam(name="offset", requirements="\d+", nullable=true, description="Offset from which to start listing.")
-     * @QueryParam(name="limit", requirements="\d+", default="5", description="How many entities to return.")
-     * @param ParamFetcher $paramFetcher
-     * @View()
-     * @return array
+     * Lists all timeEntry entities.
+     * @Route("/", name="timeentry_index")
+     * @Method("GET")
+     * @Template()
      */
-    public function getTimeentriesAction(ParamFetcher $paramFetcher)
+    public function indexAction()
     {
-        $offset = $paramFetcher->get('offset');
-        $limit = $paramFetcher->get('limit');
+        $em = $this->getDoctrine()->getManager();
 
-        $timeEntries = $this->getRepository()->findBy([], [], $limit, $offset);
+        $timeEntries = $em->getRepository('AppBundle:TimeEntry')->findAll();
 
-        return ['timeEntries' => $timeEntries];
+        return array(
+            'timeEntries' => $timeEntries,
+        );
     }
 
     /**
-     * Get timeentry of given id
-     * @ApiDoc()
-     * @View()
-     * @param TimeEntry $timeEntry
-     * @return array
+     * Creates a new timeEntry entity.
+     * @Route("/new", name="timeentry_new")
+     * @Method({"GET", "POST"})
+     * @Template()
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function getTimeentryAction(TimeEntry $timeEntry)
+    public function newAction(Request $request)
     {
-        return ['timeEntry' => $timeEntry];
+        $timeEntry = new Timeentry();
+        $form = $this->createForm('AppBundle\Form\TimeEntryType', $timeEntry);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($timeEntry);
+            $em->flush();
+
+            return $this->redirectToRoute('timeentry_show', array('id' => $timeEntry->getId()));
+        }
+
+        return array(
+            'timeEntry' => $timeEntry,
+            'form' => $form->createView(),
+
+        );
     }
 
     /**
-     * @return ObjectRepository
+     * Finds and displays a timeEntry entity.
+     * @Route("/{id}", name="timeentry_show")
+     * @Method("GET")
+     * @Template()
+     * @param TimeEntryInterface $timeEntry
+     * @return array
      */
-    private function getRepository(): ObjectRepository
+    public function showAction(TimeEntryInterface $timeEntry)
     {
-        return $this->getDoctrine()->getManager()->getRepository('AppBundle:TimeEntry');
+        $deleteForm = $this->createDeleteForm($timeEntry);
+
+        return array(
+            'timeEntry' => $timeEntry,
+            'delete_form' => $deleteForm->createView(),
+
+        );
     }
 
+    /**
+     * Displays a form to edit an existing timeEntry entity.
+     * @Route("/{id}/edit", name="timeentry_edit")
+     * @Method({"GET", "POST"})
+     * @param Request            $request
+     * @param TimeEntryInterface $timeEntry
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @Template()
+     */
+    public function editAction(Request $request, TimeEntryInterface $timeEntry)
+    {
+        $deleteForm = $this->createDeleteForm($timeEntry);
+        $editForm = $this->createForm('AppBundle\Form\TimeEntryType', $timeEntry);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('timeentry_edit', array('id' => $timeEntry->getId()));
+        }
+
+        return array(
+            'timeEntry' => $timeEntry,
+            'edit_form' => $editForm->createView(),
+            'delete_form' => $deleteForm->createView(),
+
+        );
+    }
+
+    /**
+     * Deletes a timeEntry entity.
+     * @Route("/{id}", name="timeentry_delete")
+     * @Method("DELETE")
+     * @param Request            $request
+     * @param TimeEntryInterface $timeEntry
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function deleteAction(Request $request, TimeEntryInterface $timeEntry)
+    {
+        $form = $this->createDeleteForm($timeEntry);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($timeEntry);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('timeentry_index');
+    }
+
+    /**
+     * Creates a form to delete a timeEntry entity.
+     * @param TimeEntryInterface $timeEntry The timeEntry entity
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createDeleteForm(TimeEntryInterface $timeEntry)
+    {
+        return $this->createFormBuilder()->setAction(
+            $this->generateUrl('timeentry_delete', array('id' => $timeEntry->getId()))
+        )->setMethod('DELETE')->getForm();
+    }
 }
