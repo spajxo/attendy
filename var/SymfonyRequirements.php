@@ -655,12 +655,6 @@ class SymfonyRequirements extends RequirementCollection
         );
 
         $this->addRecommendation(
-            function_exists('iconv'),
-            'iconv() should be available',
-            'Install and enable the <strong>iconv</strong> extension.'
-        );
-
-        $this->addRecommendation(
             function_exists('utf8_decode'),
             'utf8_decode() should be available',
             'Install and enable the <strong>XML</strong> extension.'
@@ -724,8 +718,7 @@ class SymfonyRequirements extends RequirementCollection
                     'To get the latest internationalization data upgrade the ICU system package and the intl PHP extension.'
                 );
                 if (\Symfony\Component\Intl\Intl::getIcuDataVersion() <= \Symfony\Component\Intl\Intl::getIcuVersion(
-                    )
-                ) {
+                    )) {
                     $this->addRecommendation(
                         \Symfony\Component\Intl\Intl::getIcuDataVersion()
                         === \Symfony\Component\Intl\Intl::getIcuVersion(),
@@ -750,7 +743,8 @@ class SymfonyRequirements extends RequirementCollection
 
         $accelerator =
             (extension_loaded('eaccelerator') && ini_get('eaccelerator.enable'))
-            || (extension_loaded('apc') && ini_get('apc.enabled'))
+            ||
+            (extension_loaded('apc') && ini_get('apc.enabled'))
             || (extension_loaded('Zend Optimizer+') && ini_get('zend_optimizerplus.enable'))
             || (extension_loaded('Zend OPcache') && ini_get('opcache.enable'))
             || (extension_loaded('xcache') && ini_get('xcache.cacher'))
@@ -842,7 +836,7 @@ class SymfonyRequirements extends RequirementCollection
                 continue;
             }
 
-            return (int)$package['version'][1] > 2 ? self::REQUIRED_PHP_VERSION : self::LEGACY_REQUIRED_PHP_VERSION;
+            return (int) $package['version'][1] > 2 ? self::REQUIRED_PHP_VERSION : self::LEGACY_REQUIRED_PHP_VERSION;
         }
 
         return false;

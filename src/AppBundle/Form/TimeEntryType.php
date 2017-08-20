@@ -2,11 +2,13 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\TimeEntry;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TimeEntryType extends AbstractType
@@ -29,7 +31,8 @@ class TimeEntryType extends AbstractType
                     'data-date-today-highlight' => 'true',
                 ],
             ]
-        )->add(
+        );
+        $builder->add(
             'timeIn',
             TimeType::class,
             [
@@ -45,7 +48,8 @@ class TimeEntryType extends AbstractType
                     'data-default-time' => '8:00',
                 ],
             ]
-        )->add(
+        );
+        $builder->add(
             'timeOut',
             TimeType::class,
             [
@@ -61,16 +65,18 @@ class TimeEntryType extends AbstractType
                     'data-default-time' => '16:00',
                 ],
             ]
-        )->add(
-            'break',
+        );
+        $builder->add(
+            'timeBreak',
             IntegerType::class,
             [
+                'empty_data' => 0,
                 'required' => false,
-                'attr' => [
-                    'step' => 5,
-                ],
             ]
-        )->add('user');
+        );
+        $builder->add('user');
+
+
     }
 
     /**
@@ -79,9 +85,15 @@ class TimeEntryType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => 'AppBundle\Entity\TimeEntry',
-            )
+                'empty_data' => function (FormInterface $form) {
+                    $user = $form->get('user')->getData();
+                    $date = $form->get('date')->getData();
+
+                    return new TimeEntry($user, $date);
+                },
+            ]
         );
     }
 }

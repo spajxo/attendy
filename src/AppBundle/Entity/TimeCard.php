@@ -2,141 +2,85 @@
 /**
  * Created by PhpStorm.
  * User: spajx
- * Date: 29.5.16
- * Time: 19:35
+ * Date: 30.4.17
+ * Time: 16:39
  */
 
 namespace AppBundle\Entity;
 
-use AppBundle\Model\TimeEntryInterface;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Criteria;
 
 /**
- * Class MonthlyTimeCard
- * @package AppBundle\Entity
- * @ORM\Entity()
- * @ORM\Table("app_time_card")
- * @UniqueEntity(fields={"user", "year", "month"})
+ * Class TimeCard
  */
 class TimeCard
 {
-    /**
-     * @var int
-     * @ORM\Id()
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
 
     /**
-     * @var User
-     * @Assert\NotBlank()
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     */
-    protected $user;
-
-    /**
-     * @var int
-     * @Assert\NotBlank()
-     * @Assert\Range(min="1970", max="2100")
-     * @ORM\Column(type="smallint")
-     */
-    protected $year;
-
-    /**
-     * @var int
-     * @Assert\NotBlank()
-     * @Assert\Range(min="1", max="12")
-     * @ORM\Column(type="smallint")
+     * @var \DateTime
      */
     protected $month;
 
     /**
-     * @var ArrayCollection|TimeEntryInterface[]
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\TimeEntry", mappedBy="timeCard")
+     * @var TimeEntry[]|ArrayCollection
      */
-    protected $timeEntries;
+    protected $entries;
 
     /**
-     * MonthlyTimeCard constructor.
-     * @param User $user
-     * @param int  $year
-     * @param int  $month
+     * @var int
      */
-    public function __construct(User $user, int $year, int $month)
+    protected $workedMinutes = 0;
+
+    /**
+     * TimeCard constructor.
+     * @param \DateTime $month
+     * @param array     $entries
+     */
+    public function __construct(\DateTime $month, array $entries)
     {
-        $this->user = $user;
-        $this->year = $year;
-        $this->month = $month;
-        $this->timeEntries = new ArrayCollection();
+        $this->entries = new ArrayCollection($entries);
+
+        foreach ($this->entries as $entry) {
+            $this->workedMinutes += $entry->getWorkedMinutes();
+        }
+    }
+
+    /**
+     * @return TimeEntry[]|ArrayCollection
+     */
+    public function getEntries(): ArrayCollection
+    {
+        return $this->entries;
+    }
+
+    /**
+     * @param DateTimeInterface $date
+     * @return TimeEntry
+     */
+    public function getEntryByDate(DateTimeInterface $date): TimeEntry
+    {
+        $criteria = Criteria::create()->where(Criteria::expr()->eq('date', $date))->setFirstResult(1);
+
+        return $this->entries->matching($criteria)->first();
     }
 
     /**
      * @return int
      */
-    public function getId()
+    public function getWorkedMinutes(): int
     {
-        return $this->id;
+        return $this->workedMinutes;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
 
     /**
-     * @return User
+     * @return float
      */
-    public function getUser()
+    public function getWorkedHours(): float
     {
-        return $this->user;
-    }
-
-    /**
-     * @param User $user
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
-    }
-
-    /**
-     * @return int
-     */
-    public function getYear()
-    {
-        return $this->year;
-    }
-
-    /**
-     * @param int $year
-     */
-    public function setYear($year)
-    {
-        $this->year = $year;
-    }
-
-    /**
-     * @return TimeEntryInterface[]
-     */
-    public function getTimeEntries()
-    {
-        return clone $this->timeEntries;
-    }
-
-    /**
-     * @param TimeEntryInterface $timeEntry
-     */
-    public function addTimeEntry(TimeEntryInterface $timeEntry)
-    {
-        $this->timeEntries->add($timeEntry);
+        return $this->workedMinutes / 60;
     }
 
 }

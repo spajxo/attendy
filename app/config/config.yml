@@ -32,6 +32,7 @@ framework:
     fragments:       ~
     http_method_override: true
     assets: ~
+    ide: phpstorm
 
 # Twig Configuration
 twig:
@@ -45,8 +46,12 @@ twig:
             abbr: 'Atd'
             author: 'Spajxo'
     date:
-        format: d.m.Y, H:i:s
+        format: d.m.Y
         interval_format: '%%d days'
+    number_format:
+        decimals: 2
+        decimal_point: ','
+        thousands_separator: '.'
 
 
 # Doctrine Configuration

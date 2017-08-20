@@ -2,25 +2,26 @@
 /**
  * Created by PhpStorm.
  * User: spajx
- * Date: 29.5.16
- * Time: 19:42
+ * Date: 30.4.17
+ * Time: 16:42
  */
 
 namespace AppBundle\Entity;
 
-use AppBundle\Model\TimeEntryInterface;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use FOS\UserBundle\Model\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class TimeEntry
- * @package AppBundle\Entity
- * @ORM\Entity()
+ * @package AppBundle\Model
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\TimeEntryRepository")
  * @ORM\Table("app_time_entry")
  * @UniqueEntity(fields={"date", "user"})
  */
-class TimeEntry implements TimeEntryInterface
+class TimeEntry
 {
     /**
      * @var int
@@ -31,7 +32,15 @@ class TimeEntry implements TimeEntryInterface
     protected $id;
 
     /**
-     * @var \DateTime
+     * @var UserInterface
+     * @Assert\NotBlank()
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    protected $user;
+
+    /**
+     * @var DateTimeInterface
      * @Assert\DateTime()
      * @Assert\NotBlank()
      * @ORM\Column(type="date")
@@ -39,95 +48,64 @@ class TimeEntry implements TimeEntryInterface
     protected $date;
 
     /**
-     * @var User
-     * @Assert\NotBlank()
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @var string
+     * @Assert\Time()
+     * @ORM\Column(type="string", length=8, nullable=true)
      */
-    protected $user;
-
-
-    /**
-     * @var TimeCard
-     * @Assert\NotBlank()
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TimeCard", inversedBy="timeEntries")
-     * @ORM\JoinColumn(name="time_entry_id", referencedColumnName="id")
-     */
-    protected $timeCard;
+    protected $timeIn = '';
 
     /**
      * @var string
      * @Assert\Time()
      * @ORM\Column(type="string", length=8, nullable=true)
      */
-    protected $timeIn;
+    protected $timeOut = '';
 
     /**
-     * @var string
-     * @Assert\Time()
-     * @ORM\Column(type="string", length=8, nullable=true)
-     */
-    protected $timeOut;
-
-    /**
-     * Length of break in minutes
      * @var integer
      * @ORM\Column(type="integer", nullable=true)
      */
-    protected $break = 0;
+    protected $timeBreak = 60;
 
     /**
-     * @return \DateTime
+     * TimeEntry constructor.
+     * @param UserInterface     $user
+     * @param DateTimeInterface $date
      */
-    public function getDate()
+    public function __construct(UserInterface $user, DateTimeInterface $date)
     {
-        return $this->date;
-    }
-
-    /**
-     * @param \DateTime $date
-     */
-    public function setDate($date)
-    {
+        $this->user = $user;
         $this->date = $date;
     }
 
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
+     * @return UserInterface
      */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return User
-     */
-    public function getUser()
+    public function getUser(): UserInterface
     {
         return $this->user;
     }
 
     /**
-     * @param User $user
+     * @return DateTimeInterface
      */
-    public function setUser($user)
+    public function getDate(): DateTimeInterface
     {
-        $this->user = $user;
+        return $this->date;
     }
 
     /**
      * @return string
      */
-    public function getTimeIn()
+    public function getTimeIn(): string
     {
         return $this->timeIn;
     }
@@ -135,7 +113,7 @@ class TimeEntry implements TimeEntryInterface
     /**
      * @param string $timeIn
      */
-    public function setTimeIn($timeIn)
+    public function setTimeIn(string $timeIn)
     {
         $this->timeIn = $timeIn;
     }
@@ -143,7 +121,7 @@ class TimeEntry implements TimeEntryInterface
     /**
      * @return string
      */
-    public function getTimeOut()
+    public function getTimeOut(): string
     {
         return $this->timeOut;
     }
@@ -151,7 +129,7 @@ class TimeEntry implements TimeEntryInterface
     /**
      * @param string $timeOut
      */
-    public function setTimeOut($timeOut)
+    public function setTimeOut(string $timeOut)
     {
         $this->timeOut = $timeOut;
     }
@@ -159,16 +137,67 @@ class TimeEntry implements TimeEntryInterface
     /**
      * @return int
      */
-    public function getBreak()
+    public function getTimeBreak(): int
     {
-        return $this->break;
+        return $this->timeBreak;
     }
 
     /**
-     * @param int $break
+     * @param int $timeBreak
      */
-    public function setBreak($break)
+    public function setTimeBreak(int $timeBreak)
     {
-        $this->break = $break;
+        $this->timeBreak = $timeBreak;
+    }
+
+    /**
+     * @return int number of minutes worked
+     */
+    public function getWorkedMinutes(): int
+    {
+        return $this->getTimeWorked()->getMinutes();
+    }
+
+    /**
+     * @return float
+     */
+    public function getWorkedHours(): float
+    {
+        return $this->getTimeWorked()->getHours();
+    }
+
+
+    /**
+     * @return TimeWorked
+     */
+    public function getTimeWorked()
+    {
+        return new TimeWorked($this->getDatetimeFrom(), $this->getDatetimeTo());
+    }
+
+    /**
+     * @return DateTimeInterface
+     */
+    public function getDatetimeFrom(): DateTimeInterface
+    {
+        /** @var \DateTime $from */
+        $from = clone $this->date;
+        list($hours, $minutes) = explode(':', $this->timeIn);
+        $from->setTime($hours, $minutes);
+
+        return $from;
+    }
+
+    /**
+     * @return DateTimeInterface
+     */
+    public function getDatetimeTo(): DateTimeInterface
+    {
+        /** @var \DateTime $to */
+        $to = clone $this->date;
+        list($hours, $minutes) = explode(':', $this->timeOut);
+        $to->setTime($hours, $minutes);
+
+        return $to;
     }
 }

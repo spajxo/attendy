@@ -20,7 +20,7 @@
                 <dt>Time Out</dt>
                 <dd>{{ timeEntry.timeOut }}</dd>
                 <dt>Break</dt>
-                <dd>{{ timeEntry.break }} minutes</dd>
+                <dd>{{ timeEntry.timeBreak }} minutes</dd>
             </dl>
         </div>
         <div class="box-footer">
@@ -34,7 +34,7 @@
                 </a>
             </div>
             {{ form_start(delete_form) }}
-            <button class="btn btn-danger" type="submit">
+            <button class="btn btn-danger">
                 <i class="fa fa-eraser"></i>
             </button>
             {{ form_end(delete_form) }}

@@ -2,6 +2,10 @@ app:
     resource: "@AppBundle/Controller/"
     type:     annotation
 
+rest:
+    resource: "@AppBundle/Controller/Rest/"
+    type: rest
+
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
 

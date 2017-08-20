@@ -3,11 +3,11 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\TimeEntry;
-use AppBundle\Model\TimeEntryInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -39,15 +39,15 @@ class TimeEntryController extends Controller
      * @Method({"GET", "POST"})
      * @Template()
      * @param Request $request
-     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @return array|RedirectResponse
      */
     public function newAction(Request $request)
     {
-        $timeEntry = new Timeentry();
-        $form = $this->createForm('AppBundle\Form\TimeEntryType', $timeEntry);
+        $form = $this->createForm('AppBundle\Form\TimeEntryType');
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $timeEntry = $form->getData();
             $em = $this->getDoctrine()->getManager();
             $em->persist($timeEntry);
             $em->flush();
@@ -56,9 +56,7 @@ class TimeEntryController extends Controller
         }
 
         return array(
-            'timeEntry' => $timeEntry,
             'form' => $form->createView(),
-
         );
     }
 
@@ -67,10 +65,10 @@ class TimeEntryController extends Controller
      * @Route("/{id}", name="timeentry_show")
      * @Method("GET")
      * @Template()
-     * @param TimeEntryInterface $timeEntry
+     * @param TimeEntry $timeEntry
      * @return array
      */
-    public function showAction(TimeEntryInterface $timeEntry)
+    public function showAction(TimeEntry $timeEntry)
     {
         $deleteForm = $this->createDeleteForm($timeEntry);
 
@@ -85,12 +83,12 @@ class TimeEntryController extends Controller
      * Displays a form to edit an existing timeEntry entity.
      * @Route("/{id}/edit", name="timeentry_edit")
      * @Method({"GET", "POST"})
-     * @param Request            $request
-     * @param TimeEntryInterface $timeEntry
-     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @param Request   $request
+     * @param TimeEntry $timeEntry
+     * @return array|RedirectResponse
      * @Template()
      */
-    public function editAction(Request $request, TimeEntryInterface $timeEntry)
+    public function editAction(Request $request, TimeEntry $timeEntry)
     {
         $deleteForm = $this->createDeleteForm($timeEntry);
         $editForm = $this->createForm('AppBundle\Form\TimeEntryType', $timeEntry);
@@ -114,11 +112,11 @@ class TimeEntryController extends Controller
      * Deletes a timeEntry entity.
      * @Route("/{id}", name="timeentry_delete")
      * @Method("DELETE")
-     * @param Request            $request
-     * @param TimeEntryInterface $timeEntry
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @param Request   $request
+     * @param TimeEntry $timeEntry
+     * @return RedirectResponse
      */
-    public function deleteAction(Request $request, TimeEntryInterface $timeEntry)
+    public function deleteAction(Request $request, TimeEntry $timeEntry)
     {
         $form = $this->createDeleteForm($timeEntry);
         $form->handleRequest($request);
@@ -134,10 +132,10 @@ class TimeEntryController extends Controller
 
     /**
      * Creates a form to delete a timeEntry entity.
-     * @param TimeEntryInterface $timeEntry The timeEntry entity
+     * @param TimeEntry $timeEntry The timeEntry entity
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(TimeEntryInterface $timeEntry)
+    private function createDeleteForm(TimeEntry $timeEntry)
     {
         return $this->createFormBuilder()->setAction(
             $this->generateUrl('timeentry_delete', array('id' => $timeEntry->getId()))

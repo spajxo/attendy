@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\TimeEntry;
+use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,12 +25,26 @@ class DashboardController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $timeEntry = new TimeEntry();
-        $timeEntry->setUser($this->getUser());
-        $timeEntry->setDate(new \DateTime());
+        $date = new DateTime($request->get('date'));
+
+        $timeEntry = $this->getDoctrine()->getRepository('AppBundle:TimeEntry')->findOneBy(
+            ['user' => $this->getUser(), 'date' => $date]
+        );
+
+        if (!$timeEntry) {
+            $timeEntry = new TimeEntry($this->getUser(), $date);
+        }
 
         $form = $this->createForm('AppBundle\Form\TimeEntryType', $timeEntry);
         $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $timeEntry = $form->getData();
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($timeEntry);
+            $em->flush();
+        }
 
         return [
             'form' => $form->createView(),

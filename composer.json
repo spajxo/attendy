@@ -17,7 +17,7 @@
     }
   },
   "require": {
-    "php": ">=5.5.9",
+    "php": ">=7.0",
     "symfony/symfony": "3.2.*",
     "doctrine/orm": "2.5.*",
     "doctrine/doctrine-bundle": "^1.6",
@@ -31,14 +31,16 @@
     "symfony/assetic-bundle": "2.8.*",
     "liip/imagine-bundle": "^1.5",
     "knplabs/knp-menu-bundle": "^2.1",
-    "stof/doctrine-extensions-bundle": "^1.2"
+    "stof/doctrine-extensions-bundle": "^1.2",
+    "friendsofsymfony/rest-bundle": "^2.2",
+    "jms/serializer-bundle": "^2.0"
   },
   "require-dev": {
     "sensio/generator-bundle": "^3.0",
     "symfony/phpunit-bridge": "^3.0",
     "phpmd/phpmd": "^2.6",
     "doctrine/doctrine-fixtures-bundle": "2.3.*",
-    "phpunit/phpunit": "^4.8",
+    "phpunit/phpunit": "6.2.*",
     "squizlabs/php_codesniffer": "^2.7"
   },
   "scripts": {
@@ -62,7 +64,7 @@
   "config": {
     "bin-dir": "bin",
     "platform": {
-      "php": "5.5.9"
+      "php": "7.1.5"
     }
   },
   "extra": {
