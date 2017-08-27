@@ -27,6 +27,7 @@
  * Represents a single PHP requirement, e.g. an installed extension.
  * It can be a mandatory requirement or an optional recommendation.
  * There is a special subclass, named PhpIniRequirement, to check a php.ini configuration.
+ *
  * @author Tobias Schultze <http://tobion.de>
  */
 class Requirement
@@ -39,6 +40,7 @@ class Requirement
 
     /**
      * Constructor that initializes the requirement.
+     *
      * @param bool        $fulfilled   Whether the requirement is fulfilled
      * @param string      $testMessage The message for testing the requirement
      * @param string      $helpHtml    The help text formatted in HTML for resolving the problem
@@ -56,6 +58,7 @@ class Requirement
 
     /**
      * Returns whether the requirement is fulfilled.
+     *
      * @return bool true if fulfilled, otherwise false
      */
     public function isFulfilled()
@@ -65,6 +68,7 @@ class Requirement
 
     /**
      * Returns the message for testing the requirement.
+     *
      * @return string The test message
      */
     public function getTestMessage()
@@ -74,6 +78,7 @@ class Requirement
 
     /**
      * Returns the help text for resolving the problem.
+     *
      * @return string The help text
      */
     public function getHelpText()
@@ -83,6 +88,7 @@ class Requirement
 
     /**
      * Returns the help text formatted in HTML.
+     *
      * @return string The HTML help
      */
     public function getHelpHtml()
@@ -92,6 +98,7 @@ class Requirement
 
     /**
      * Returns whether this is only an optional recommendation and not a mandatory requirement.
+     *
      * @return bool true if optional, false if mandatory
      */
     public function isOptional()
@@ -102,12 +109,14 @@ class Requirement
 
 /**
  * Represents a PHP requirement in form of a php.ini configuration.
+ *
  * @author Tobias Schultze <http://tobion.de>
  */
 class PhpIniRequirement extends Requirement
 {
     /**
      * Constructor that initializes the requirement.
+     *
      * @param string        $cfgName           The configuration name used for ini_get()
      * @param bool|callback $evaluation        Either a boolean indicating whether the configuration should evaluate to true or false,
      *                                         or a callback function receiving the configuration value as parameter to determine the fulfillment of the requirement
@@ -171,6 +180,7 @@ class PhpIniRequirement extends Requirement
 
 /**
  * A RequirementCollection represents a set of Requirement instances.
+ *
  * @author Tobias Schultze <http://tobion.de>
  */
 class RequirementCollection implements IteratorAggregate
@@ -182,6 +192,7 @@ class RequirementCollection implements IteratorAggregate
 
     /**
      * Gets the current RequirementCollection as an Iterator.
+     *
      * @return Traversable A Traversable interface
      */
     public function getIterator()
@@ -191,6 +202,7 @@ class RequirementCollection implements IteratorAggregate
 
     /**
      * Adds a Requirement.
+     *
      * @param Requirement $requirement A Requirement instance
      */
     public function add(Requirement $requirement)
@@ -200,6 +212,7 @@ class RequirementCollection implements IteratorAggregate
 
     /**
      * Adds a mandatory requirement.
+     *
      * @param bool        $fulfilled   Whether the requirement is fulfilled
      * @param string      $testMessage The message for testing the requirement
      * @param string      $helpHtml    The help text formatted in HTML for resolving the problem
@@ -212,6 +225,7 @@ class RequirementCollection implements IteratorAggregate
 
     /**
      * Adds an optional recommendation.
+     *
      * @param bool        $fulfilled   Whether the recommendation is fulfilled
      * @param string      $testMessage The message for testing the recommendation
      * @param string      $helpHtml    The help text formatted in HTML for resolving the problem
@@ -224,6 +238,7 @@ class RequirementCollection implements IteratorAggregate
 
     /**
      * Adds a mandatory requirement in form of a php.ini configuration.
+     *
      * @param string        $cfgName           The configuration name used for ini_get()
      * @param bool|callback $evaluation        Either a boolean indicating whether the configuration should evaluate to true or false,
      *                                         or a callback function receiving the configuration value as parameter to determine the fulfillment of the requirement
@@ -249,6 +264,7 @@ class RequirementCollection implements IteratorAggregate
 
     /**
      * Adds an optional recommendation in form of a php.ini configuration.
+     *
      * @param string        $cfgName           The configuration name used for ini_get()
      * @param bool|callback $evaluation        Either a boolean indicating whether the configuration should evaluate to true or false,
      *                                         or a callback function receiving the configuration value as parameter to determine the fulfillment of the requirement
@@ -274,6 +290,7 @@ class RequirementCollection implements IteratorAggregate
 
     /**
      * Adds a requirement collection to the current set of requirements.
+     *
      * @param RequirementCollection $collection A RequirementCollection instance
      */
     public function addCollection(RequirementCollection $collection)
@@ -283,6 +300,7 @@ class RequirementCollection implements IteratorAggregate
 
     /**
      * Returns both requirements and recommendations.
+     *
      * @return Requirement[]
      */
     public function all()
@@ -292,6 +310,7 @@ class RequirementCollection implements IteratorAggregate
 
     /**
      * Returns all mandatory requirements.
+     *
      * @return Requirement[]
      */
     public function getRequirements()
@@ -308,6 +327,7 @@ class RequirementCollection implements IteratorAggregate
 
     /**
      * Returns the mandatory requirements that were not met.
+     *
      * @return Requirement[]
      */
     public function getFailedRequirements()
@@ -324,6 +344,7 @@ class RequirementCollection implements IteratorAggregate
 
     /**
      * Returns all optional recommendations.
+     *
      * @return Requirement[]
      */
     public function getRecommendations()
@@ -357,6 +378,7 @@ class RequirementCollection implements IteratorAggregate
 
     /**
      * Returns whether a php.ini configuration is not correct.
+     *
      * @return bool php.ini configuration problem?
      */
     public function hasPhpIniConfigIssue()
@@ -372,6 +394,7 @@ class RequirementCollection implements IteratorAggregate
 
     /**
      * Returns the PHP configuration file (php.ini) path.
+     *
      * @return string|false php.ini file path
      */
     public function getPhpIniConfigPath()
@@ -383,6 +406,7 @@ class RequirementCollection implements IteratorAggregate
 /**
  * This class specifies all requirements and optional recommendations that
  * are necessary to run the Symfony Standard Edition.
+ *
  * @author Tobias Schultze <http://tobion.de>
  * @author Fabien Potencier <fabien@symfony.com>
  */
@@ -414,7 +438,8 @@ class SymfonyRequirements extends RequirementCollection
                 sprintf('PHP version must be at least %s (%s installed)', $requiredPhpVersion, $installedPhpVersion),
                 sprintf('You are running PHP version "<strong>%s</strong>", but Symfony needs at least PHP "<strong>%s</strong>" to run.
                 Before using Symfony, upgrade your PHP installation, preferably to the latest version.',
-                    $installedPhpVersion, $requiredPhpVersion
+                    $installedPhpVersion,
+                    $requiredPhpVersion
                 ),
                 sprintf('Install PHP %s or newer (installed version is %s)', $requiredPhpVersion, $installedPhpVersion)
             );
@@ -467,7 +492,8 @@ class SymfonyRequirements extends RequirementCollection
 
             $this->addRequirement(
                 isset($timezones[@date_default_timezone_get()]),
-                sprintf('Configured default timezone "%s" must be supported by your installation of PHP',
+                sprintf(
+                    'Configured default timezone "%s" must be supported by your installation of PHP',
                     @date_default_timezone_get()
                 ),
                 'Your default timezone is not supported by PHP. Check for typos in your <strong>php.ini</strong> file and have a look at the list of deprecated timezones at <a href="http://php.net/manual/en/timezones.others.php">http://php.net/manual/en/timezones.others.php</a>.'
@@ -540,7 +566,8 @@ class SymfonyRequirements extends RequirementCollection
 
         if (extension_loaded('xdebug')) {
             $this->addPhpIniRequirement(
-                'xdebug.show_exception_trace', false,
+                'xdebug.show_exception_trace',
+                false,
                 true
             );
 
@@ -585,9 +612,8 @@ class SymfonyRequirements extends RequirementCollection
             try {
                 $r = new ReflectionClass('Sensio\Bundle\DistributionBundle\SensioDistributionBundle');
 
-                $contents = file_get_contents(dirname($r->getFileName())
-                    .'/Resources/skeleton/app/SymfonyRequirements.php'
-                );
+                $contents =
+                    file_get_contents(dirname($r->getFileName()).'/Resources/skeleton/app/SymfonyRequirements.php');
             } catch (ReflectionException $e) {
                 $contents = '';
             }
@@ -711,14 +737,16 @@ class SymfonyRequirements extends RequirementCollection
             if (class_exists('Symfony\Component\Intl\Intl')) {
                 $this->addRecommendation(
                     \Symfony\Component\Intl\Intl::getIcuDataVersion() <= \Symfony\Component\Intl\Intl::getIcuVersion(),
-                    sprintf('intl ICU version installed on your system is outdated (%s) and does not match the ICU data bundled with Symfony (%s)',
+                    sprintf(
+                        'intl ICU version installed on your system is outdated (%s) and does not match the ICU data bundled with Symfony (%s)',
                         \Symfony\Component\Intl\Intl::getIcuVersion(),
                         \Symfony\Component\Intl\Intl::getIcuDataVersion()
                     ),
                     'To get the latest internationalization data upgrade the ICU system package and the intl PHP extension.'
                 );
                 if (\Symfony\Component\Intl\Intl::getIcuDataVersion() <= \Symfony\Component\Intl\Intl::getIcuVersion(
-                    )) {
+                    )
+                ) {
                     $this->addRecommendation(
                         \Symfony\Component\Intl\Intl::getIcuDataVersion()
                         === \Symfony\Component\Intl\Intl::getIcuVersion(),
@@ -782,11 +810,9 @@ class SymfonyRequirements extends RequirementCollection
             $drivers = PDO::getAvailableDrivers();
             $this->addRecommendation(
                 count($drivers) > 0,
-                sprintf('PDO should have some drivers installed (currently available: %s)',
-                    count($drivers) ? implode(
-                        ', ',
-                        $drivers
-                    ) : 'none'
+                sprintf(
+                    'PDO should have some drivers installed (currently available: %s)',
+                    count($drivers) ? implode(', ', $drivers) : 'none'
                 ),
                 'Install <strong>PDO drivers</strong> (mandatory for Doctrine).'
             );
@@ -795,7 +821,9 @@ class SymfonyRequirements extends RequirementCollection
 
     /**
      * Loads realpath_cache_size from php.ini and converts it to int.
+     *
      * (e.g. 16k is converted to 16384 int)
+     *
      * @return int
      */
     protected function getRealpathCacheSize()
@@ -821,6 +849,7 @@ class SymfonyRequirements extends RequirementCollection
 
     /**
      * Defines PHP required version from Symfony version.
+     *
      * @return string|false The PHP required version or false if it could not be guessed
      */
     protected function getPhpRequiredVersion()

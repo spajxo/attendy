@@ -39,9 +39,4 @@ class TimeCardController extends FOSRestController
         ];
     }
 
-    public function getTimecard()
-    {
-
-    }
-
 }
