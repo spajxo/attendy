@@ -25,6 +25,7 @@ class TimeEntryType extends AbstractType
             [
                 'widget' => 'single_text',
                 'format' => 'dd.MM.yyyy',
+                'empty_data' => new \DateTime(),
                 'attr' => [
                     'data-provide' => 'datepicker',
                     'data-date-format' => 'dd.mm.yyyy',

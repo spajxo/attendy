@@ -8,13 +8,13 @@
     <div class="col-sm-6">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">{{ form.vars.data.date|date('d.m.Y') }}</h3>
+                <h3 class="box-title">{{ date|date('d.m.Y') }}</h3>
                 <div class="box-tools">
                     <div class="btn-group">
-                        <a href="{{ path('dashboard', {date: form.vars.data.date|date_modify('-1 day')|date('Y-m-d')}) }}"
+                        <a href="{{ path('dashboard', {date: date|date_modify('-1 day')|date('Y-m-d')}) }}"
                            class="btn btn-box-tool btn-default"><i class="fa fa-arrow-left"></i></a>
                         <a href="{{ path('dashboard') }}" class="btn btn-box-tool btn-default">{{ 'Today'|trans }}</a>
-                        <a href="{{ path('dashboard', {date: form.vars.data.date|date_modify('+1 day')|date('Y-m-d')}) }}"
+                        <a href="{{ path('dashboard', {date: date|date_modify('+1 day')|date('Y-m-d')}) }}"
                            class="btn btn-box-tool btn-default"><i class="fa fa-arrow-right"></i></a>
                     </div>
                 </div>

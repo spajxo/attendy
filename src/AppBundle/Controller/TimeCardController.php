@@ -5,16 +5,16 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\TimeCard;
 use AppBundle\Entity\TimeEntry;
 use DateTime;
-use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class TimeCardController
  * @package AppBundle\Controller
  */
-class TimeCardController extends FOSRestController
+class TimeCardController extends Controller
 {
 
     /**

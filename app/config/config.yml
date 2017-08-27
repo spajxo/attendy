@@ -51,7 +51,7 @@ twig:
     number_format:
         decimals: 2
         decimal_point: ','
-        thousands_separator: '.'
+        thousands_separator: ' '
 
 
 # Doctrine Configuration

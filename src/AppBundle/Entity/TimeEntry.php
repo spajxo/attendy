@@ -172,7 +172,7 @@ class TimeEntry
      */
     public function getTimeWorked()
     {
-        return new TimeWorked($this->getDatetimeFrom(), $this->getDatetimeTo());
+        return new TimeWorked($this->getDatetimeFrom(), $this->getDatetimeTo(), $this->getTimeBreak());
     }
 
     /**

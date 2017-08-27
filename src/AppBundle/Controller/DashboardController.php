@@ -26,12 +26,9 @@ class DashboardController extends Controller
     public function indexAction(Request $request)
     {
         $date = new DateTime($request->get('date'));
+        $repo = $this->getDoctrine()->getRepository('AppBundle:TimeEntry');
 
-        $timeEntry = $this->getDoctrine()->getRepository('AppBundle:TimeEntry')->findOneBy(
-            ['user' => $this->getUser(), 'date' => $date]
-        );
-
-        if (!$timeEntry) {
+        if (!$timeEntry = $repo->findOneBy(['user' => $this->getUser(), 'date' => $date])) {
             $timeEntry = new TimeEntry($this->getUser(), $date);
         }
 
@@ -47,6 +44,7 @@ class DashboardController extends Controller
         }
 
         return [
+            'date' => $date,
             'form' => $form->createView(),
         ];
     }
